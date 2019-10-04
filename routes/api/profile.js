@@ -226,6 +226,7 @@ router.put(
 // @route DELETE api/profile/experience/:expId
 // @desc Delete profile experience
 // @access Private
+//todo validation that expId is an ObjectId in mongoose -can delete just 0 and 1
 router.delete('/experience/:expId', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id })
@@ -236,6 +237,90 @@ router.delete('/experience/:expId', auth, async (req, res) => {
       .indexOf(req.params.expId)
 
     profile.experience.splice(removeIndex, 1)
+
+    await profile.save()
+
+    res.json(profile)
+  } catch (err) {
+    console.log(err.messgae)
+    res.status(500).send('Server Error')
+  }
+})
+
+// @route PUT api/profile/eduction
+// @desc Add profile eductation
+// @access Private
+//todo add update education route
+router.put(
+  '/education',
+  [
+    auth,
+    [
+      check('school', 'School is required')
+        .not()
+        .isEmpty(),
+      check('degree', 'Degree is required')
+        .not()
+        .isEmpty(),
+      check('fieldOfStudy', 'Field of Study is required')
+        .not()
+        .isEmpty(),
+      check('from', 'From date is required')
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    const {
+      school,
+      degree,
+      fieldOfStudy,
+      from,
+      to,
+      current,
+      description
+    } = req.body
+
+    const newEdu = {
+      school,
+      degree,
+      fieldOfStudy,
+      from,
+      to,
+      current,
+      description
+    }
+    try {
+      const profile = await Profile.findOne({ user: req.user.id })
+      profile.education.unshift(newEdu)
+      await profile.save()
+      res.json(profile)
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send('Server Error.')
+    }
+  }
+)
+
+// @route DELETE api/profile/education/:eduId
+// @desc Delete profile education
+// @access Private
+//todo validation that eduId is an ObjectId in mongoose -can delete just 0 and 1
+router.delete('/education/:eduId', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id })
+
+    //get remove index
+    const removeIndex = profile.education
+      .map(item => item.id)
+      .indexOf(req.params.eduId)
+
+    profile.education.splice(removeIndex, 1)
 
     await profile.save()
 
