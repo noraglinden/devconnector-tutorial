@@ -85,7 +85,18 @@ router.get('/:postId', auth, async (req, res) => {
 // @access Private
 router.delete('/:postId', auth, async (req, res) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params.postId)
+    const post = await Post.findById(req.params.postId)
+
+    if (!post) {
+      return res.status(404).json({ msg: 'No post found for this id' })
+    }
+
+    //Check post belongs to the user before deleteing
+    if (post.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized to delete post' })
+    }
+
+    await post.remove()
 
     res.json({ msg: 'Post successfully deleted' })
   } catch (err) {
