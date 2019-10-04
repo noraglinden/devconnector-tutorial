@@ -46,4 +46,17 @@ router.post(
   }
 )
 
+// @route GET api/posts
+// @desc Get all posts
+// @access Public
+router.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find()
+    res.send(posts)
+  } catch (err) {
+    console.log(err.message)
+    return res.status(500).send('Server Error')
+  }
+})
+
 module.exports = router
