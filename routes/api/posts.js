@@ -107,4 +107,66 @@ router.delete('/:postId', auth, async (req, res) => {
     res.status(500).send('Server Error')
   }
 })
+
+// @route PUT api/posts/like/:postId
+// @desc Like a post by Id
+// @access Private
+//todo see if you can make like and unlike in the same route
+router.put('/like/:postId', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId)
+
+    if (!post) {
+      return res.status(404).json({ msg: 'No post found for this id' })
+    }
+
+    //Check if user has already liked
+    if (
+      post.likes.filter(like => like.user.toString() === req.user.id).length > 0
+    ) {
+      return res.status(400).json({ msg: 'Post already liked' })
+    }
+
+    post.likes.unshift({ user: req.user.id })
+    post.save()
+    res.json(post.likes)
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
+
+// @route PUT api/posts/unlike/:postId
+// @desc Remove Like from post by Id
+// @access Private
+//todo see if you can make like and unlike in the same route
+router.put('/unlike/:postId', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId)
+
+    if (!post) {
+      return res.status(404).json({ msg: 'No post found for this id' })
+    }
+
+    //Check if user has already liked
+    if (
+      post.likes.filter(like => like.user.toString() === req.user.id).length ===
+      0
+    ) {
+      return res.status(400).json({ msg: 'Post has not been liked' })
+    }
+
+    const removeIndex = post.likes
+      .map(like => like.user.toString())
+      .indexOf(req.user.id)
+
+    post.likes.splice(removeIndex, 1)
+    post.save()
+    res.json(post.likes)
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
+
 module.exports = router
