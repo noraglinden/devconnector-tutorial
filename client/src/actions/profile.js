@@ -5,11 +5,7 @@ import { GET_PROFILE, PROFILE_ERROR } from './types'
 // get current user's profile
 export const getCurrentProfile = () => async dispatch => {
   try {
-    const config = {
-      Authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWQ5ZTBmZWViYTVjZWI3YmRiZjE3MDJmIn0sImlhdCI6MTU3MDgzMzE0MywiZXhwIjoxNjA2ODMzMTQzfQ.QwYnK6ubLxdctDVxbTYVt11Pygj1EA4A2Rvr_oIaayI'
-    }
-    const res = await axios.get('/api/profile/me', config)
+    const res = await axios.get('/api/profile/me')
     dispatch({ type: GET_PROFILE, payload: res.data })
   } catch (err) {
     dispatch({
