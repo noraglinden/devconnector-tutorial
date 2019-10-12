@@ -34,8 +34,6 @@ const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
       )}
     </Fragment>
   )
-
-  return <div></div>
 }
 
 Profiles.propTypes = {
