@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { createProfile, getCurrentProfile } from '../../actions/profile'
 import { Link, withRouter } from 'react-router-dom'
 
+//todo figure reroute on save to dashboard
 const EditProfile = ({
   createProfile,
   profile: { profile, loading },
@@ -16,7 +17,7 @@ const EditProfile = ({
     location: '',
     status: '',
     skills: '',
-    githubusername: '',
+    githubUsername: '',
     bio: '',
     twitter: '',
     facebook: '',
@@ -37,8 +38,8 @@ const EditProfile = ({
       location: loading || !profile.location ? '' : profile.location,
       status: loading || !profile.status ? '' : profile.status,
       skills: loading || !profile.skills ? '' : profile.skills.join(', '),
-      githubusername:
-        loading || !profile.githubusername ? '' : profile.githubusername,
+      githubUsername:
+        loading || !profile.githubUsername ? '' : profile.githubUsername,
       bio: loading || !profile.bio ? '' : profile.bio,
       twitter: loading || !profile.social ? '' : profile.social.twitter,
       facebook: loading || !profile.social ? '' : profile.social.facebook,
@@ -54,7 +55,7 @@ const EditProfile = ({
     location,
     status,
     skills,
-    githubusername,
+    githubUsername,
     bio,
     twitter,
     facebook,
@@ -148,8 +149,8 @@ const EditProfile = ({
           <input
             type='text'
             placeholder='Github Username'
-            name='githubusername'
-            value={githubusername}
+            name='githubUsername'
+            value={githubUsername}
             onChange={e => onChange(e)}
           />
           <small className='form-text'>
